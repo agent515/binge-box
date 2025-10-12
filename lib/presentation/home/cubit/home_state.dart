@@ -12,6 +12,6 @@ sealed class HomeState with _$HomeState {
     required List<Movie> trendingMovies,
     required List<Movie> nowPlayingMovies,
   }) = HomeReady;
-  const factory HomeState.goToDetailsPage(int id) = HomeGoToDetailsPage;
+  const factory HomeState.goToDetailsPage(Movie movie) = HomeGoToDetailsPage;
   const factory HomeState.error(AppError error) = HomeError;
 }

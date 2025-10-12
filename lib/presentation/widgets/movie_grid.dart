@@ -6,9 +6,11 @@ class MovieGrid extends StatelessWidget {
   const MovieGrid({
     super.key,
     required this.movies,
+    required this.onMovieTap,
   });
 
   final List<Movie> movies;
+  final void Function(Movie movie) onMovieTap;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,10 @@ class MovieGrid extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final movie = movies[index];
-        return MovieCard(movie: movie);
+        return MovieCard(
+          movie: movie,
+          onTap: () => onMovieTap(movie),
+        );
       },
       itemCount: movies.length,
     );

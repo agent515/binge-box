@@ -168,9 +168,9 @@ class _$HomeReadyCopyWithImpl<$Res> implements $HomeReadyCopyWith<$Res> {
 /// @nodoc
 
 class HomeGoToDetailsPage implements HomeState {
-  const HomeGoToDetailsPage(this.id);
+  const HomeGoToDetailsPage(this.movie);
 
-  final int id;
+  final Movie movie;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -184,15 +184,15 @@ class HomeGoToDetailsPage implements HomeState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is HomeGoToDetailsPage &&
-            (identical(other.id, id) || other.id == id));
+            (identical(other.movie, movie) || other.movie == movie));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id);
+  int get hashCode => Object.hash(runtimeType, movie);
 
   @override
   String toString() {
-    return 'HomeState.goToDetailsPage(id: $id)';
+    return 'HomeState.goToDetailsPage(movie: $movie)';
   }
 }
 
@@ -203,7 +203,9 @@ abstract mixin class $HomeGoToDetailsPageCopyWith<$Res>
           HomeGoToDetailsPage value, $Res Function(HomeGoToDetailsPage) _then) =
       _$HomeGoToDetailsPageCopyWithImpl;
   @useResult
-  $Res call({int id});
+  $Res call({Movie movie});
+
+  $MovieCopyWith<$Res> get movie;
 }
 
 /// @nodoc
@@ -218,14 +220,24 @@ class _$HomeGoToDetailsPageCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
+    Object? movie = null,
   }) {
     return _then(HomeGoToDetailsPage(
-      null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
+      null == movie
+          ? _self.movie
+          : movie // ignore: cast_nullable_to_non_nullable
+              as Movie,
     ));
+  }
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $MovieCopyWith<$Res> get movie {
+    return $MovieCopyWith<$Res>(_self.movie, (value) {
+      return _then(_self.copyWith(movie: value));
+    });
   }
 }
 

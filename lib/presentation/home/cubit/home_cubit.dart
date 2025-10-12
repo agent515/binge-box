@@ -34,7 +34,7 @@ class HomeCubit extends Cubit<HomeState> {
       (error) => emit(HomeState.error(error)),
       (movieList) {
         trendingMovies = [...trendingMovies, ...movieList.results];
-        _emitReady();
+        emitReady();
       },
     );
 
@@ -42,16 +42,20 @@ class HomeCubit extends Cubit<HomeState> {
       (error) => emit(HomeState.error(error)),
       (movieList) {
         nowPlayingMovies = [...nowPlayingMovies, ...movieList.results];
-        _emitReady();
+        emitReady();
       },
     );
+  }
+
+  void goToDetailsPage(Movie movie) {
+    emit(HomeState.goToDetailsPage(movie));
   }
 
   void _emitLoading() {
     emit(HomeState.loading());
   }
 
-  void _emitReady() {
+  void emitReady() {
     emit(
       HomeState.ready(
         trendingMovies: trendingMovies,

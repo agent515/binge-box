@@ -1,4 +1,5 @@
-import 'package:binge_box/presentation/home/home_page.dart';
+import 'package:binge_box/injectable/service_locator.dart';
+import 'package:binge_box/utils/app_router.dart';
 import 'package:flutter/material.dart';
 
 class BingeBox extends StatelessWidget {
@@ -6,9 +7,9 @@ class BingeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Binge Box',
-      home: HomePage(),
+      routerConfig: getIt<AppRouter>().config(),
     );
   }
 }

@@ -21,10 +21,12 @@ import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart'
 import 'package:binge_box/domain/use_cases/search_movies_use_case.dart'
     as _i717;
 import 'package:binge_box/injectable/modules/api_module.dart' as _i1054;
+import 'package:binge_box/injectable/modules/app_router_module.dart' as _i29;
 import 'package:binge_box/injectable/modules/app_sizes_module.dart' as _i407;
 import 'package:binge_box/presentation/details/cubit/movie_details_cubit.dart'
     as _i523;
 import 'package:binge_box/presentation/home/cubit/home_cubit.dart' as _i337;
+import 'package:binge_box/utils/app_router.dart' as _i795;
 import 'package:binge_box/utils/app_sizes.dart' as _i643;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
@@ -42,8 +44,10 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final apiModule = _$ApiModule();
+    final appRouterModule = _$AppRouterModule();
     final appSizesModule = _$AppSizesModule();
     gh.singleton<_i361.Dio>(() => apiModule.client);
+    gh.lazySingleton<_i795.AppRouter>(() => appRouterModule.appRouter);
     gh.lazySingleton<_i643.AppSizes>(() => appSizesModule.instance);
     gh.factory<_i761.RetrofitApiDataSource>(
         () => apiModule.apiDataSource(gh<_i361.Dio>()));
@@ -69,5 +73,7 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$ApiModule extends _i1054.ApiModule {}
+
+class _$AppRouterModule extends _i29.AppRouterModule {}
 
 class _$AppSizesModule extends _i407.AppSizesModule {}
