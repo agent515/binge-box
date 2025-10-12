@@ -1,5 +1,7 @@
 import 'package:binge_box/domain/entities/movie/movie.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({
@@ -21,10 +23,21 @@ class MovieCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 9 / 16,
-              child: Image.network(
-                movie.posterPath ?? '',
+              child: CachedNetworkImage(
+                imageUrl: movie.posterPath ?? '',
                 fit: BoxFit.cover,
                 height: 232,
+                placeholder: (context, url) => Shimmer(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 232,
+                  ),
+                ), // Or any other placeholder widget
+                errorWidget: (context, url, error) =>
+                    Center(child: Icon(Icons.error)), // Optional error widget
+                fadeInDuration: const Duration(
+                  milliseconds: 500,
+                ), // Adjust duration as needed
               ),
             ),
             Container(

@@ -23,6 +23,8 @@ dependencies:
   dartz: ^0.10.1
   pretty_dio_logger: ^1.4.0
   auto_route: ^10.1.0+1
+  cached_network_image: ^3.4.1
+  shimmer_animation: ^2.2.2
 
 dev_dependencies:
   flutter_test:
