@@ -1,0 +1,76 @@
+import 'package:binge_box/injectable/service_locator.dart';
+import 'package:binge_box/presentation/home/cubit/home_cubit.dart';
+import 'package:binge_box/presentation/home/cubit/home_state.dart';
+import 'package:binge_box/utils/app_sizes.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      getIt<AppSizes>().init(context);
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => getIt<HomeCubit>(),
+        child: BlocConsumer<HomeCubit, HomeState>(
+          listener: (context, state) {
+            if (state is HomeGoToDetailsPage) {
+              // Navigate to details page
+            }
+          },
+          builder: (context, state) {
+            switch (state) {
+              case HomeLoading():
+                return Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              case HomeReady(:final trendingMovies, :final nowPlayingMovies):
+                return Scaffold(
+                  body: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (context, index) {
+                      final movie = trendingMovies[index];
+                      return Card(
+                        child: Column(
+                          children: [
+                            Text(movie.title),
+                            getIt<AppSizes>().vPadding16,
+                            Image.network(movie.posterPath ?? ''),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: trendingMovies.length,
+                  ),
+                );
+              case HomeError(:final error):
+                return Scaffold(
+                  body: Center(
+                    child: Text('Home Error: ${error.toString()}'),
+                  ),
+                );
+              default:
+                return Container();
+            }
+          },
+        ));
+  }
+}

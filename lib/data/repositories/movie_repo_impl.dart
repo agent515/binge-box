@@ -4,7 +4,9 @@ import 'package:binge_box/domain/entities/get_list/get_movie_list.dart';
 import 'package:binge_box/domain/repositories/movie_repo.dart';
 import 'package:binge_box/utils/app_error.dart';
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton(as: MovieRepo)
 class MovieRepoImpl implements MovieRepo {
   final RetrofitApiDataSource retrofitApiDataSource;
 
