@@ -78,90 +78,20 @@ class HomeLoading implements HomeState {
 /// @nodoc
 
 class HomeReady implements HomeState {
-  const HomeReady(
-      {required final List<Movie> trendingMovies,
-      required final List<Movie> nowPlayingMovies})
-      : _trendingMovies = trendingMovies,
-        _nowPlayingMovies = nowPlayingMovies;
-
-  final List<Movie> _trendingMovies;
-  List<Movie> get trendingMovies {
-    if (_trendingMovies is EqualUnmodifiableListView) return _trendingMovies;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_trendingMovies);
-  }
-
-  final List<Movie> _nowPlayingMovies;
-  List<Movie> get nowPlayingMovies {
-    if (_nowPlayingMovies is EqualUnmodifiableListView)
-      return _nowPlayingMovies;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_nowPlayingMovies);
-  }
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $HomeReadyCopyWith<HomeReady> get copyWith =>
-      _$HomeReadyCopyWithImpl<HomeReady>(this, _$identity);
+  const HomeReady();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is HomeReady &&
-            const DeepCollectionEquality()
-                .equals(other._trendingMovies, _trendingMovies) &&
-            const DeepCollectionEquality()
-                .equals(other._nowPlayingMovies, _nowPlayingMovies));
+        (other.runtimeType == runtimeType && other is HomeReady);
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_trendingMovies),
-      const DeepCollectionEquality().hash(_nowPlayingMovies));
+  int get hashCode => runtimeType.hashCode;
 
   @override
   String toString() {
-    return 'HomeState.ready(trendingMovies: $trendingMovies, nowPlayingMovies: $nowPlayingMovies)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $HomeReadyCopyWith<$Res>
-    implements $HomeStateCopyWith<$Res> {
-  factory $HomeReadyCopyWith(HomeReady value, $Res Function(HomeReady) _then) =
-      _$HomeReadyCopyWithImpl;
-  @useResult
-  $Res call({List<Movie> trendingMovies, List<Movie> nowPlayingMovies});
-}
-
-/// @nodoc
-class _$HomeReadyCopyWithImpl<$Res> implements $HomeReadyCopyWith<$Res> {
-  _$HomeReadyCopyWithImpl(this._self, this._then);
-
-  final HomeReady _self;
-  final $Res Function(HomeReady) _then;
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? trendingMovies = null,
-    Object? nowPlayingMovies = null,
-  }) {
-    return _then(HomeReady(
-      trendingMovies: null == trendingMovies
-          ? _self._trendingMovies
-          : trendingMovies // ignore: cast_nullable_to_non_nullable
-              as List<Movie>,
-      nowPlayingMovies: null == nowPlayingMovies
-          ? _self._nowPlayingMovies
-          : nowPlayingMovies // ignore: cast_nullable_to_non_nullable
-              as List<Movie>,
-    ));
+    return 'HomeState.ready()';
   }
 }
 

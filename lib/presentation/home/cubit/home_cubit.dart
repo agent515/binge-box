@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:binge_box/domain/entities/movie/movie.dart';
 import 'package:binge_box/domain/use_cases/get_now_playing_movies_use_case.dart';
 import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart';
@@ -10,9 +12,7 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit(
     this.getTrendingMoviesUseCase,
     this.getNowPlayingMoviesUseCase,
-  ) : super(HomeState.initial()) {
-    loadHomeData();
-  }
+  ) : super(HomeState.ready());
 
   final GetTrendingMoviesUseCase getTrendingMoviesUseCase;
   final GetNowPlayingMoviesUseCase getNowPlayingMoviesUseCase;
@@ -23,27 +23,49 @@ class HomeCubit extends Cubit<HomeState> {
   List<Movie> trendingMovies = [];
   List<Movie> nowPlayingMovies = [];
 
-  Future<void> loadHomeData() async {
-    _emitLoading();
+  // Future<void> loadHomeData() async {
+  //   _emitLoading();
 
-    final trendingResult = await getTrendingMoviesUseCase(_trendingMoviesPage);
-    final nowPlayingResult =
-        await getNowPlayingMoviesUseCase(_nowPlayingMoviesPage);
+  //   final trendingResult = await getTrendingMoviesUseCase(_trendingMoviesPage);
+  //   final nowPlayingResult =
+  //       await getNowPlayingMoviesUseCase(_nowPlayingMoviesPage);
 
-    trendingResult.fold(
-      (error) => emit(HomeState.error(error)),
-      (movieList) {
-        trendingMovies = [...trendingMovies, ...movieList.results];
-        emitReady();
+  //   trendingResult.fold(
+  //     (error) => emit(HomeState.error(error)),
+  //     (movieList) {
+  //       trendingMovies = [...trendingMovies, ...movieList.results];
+  //       emitReady();
+  //     },
+  //   );
+
+  //   nowPlayingResult.fold(
+  //     (error) => emit(HomeState.error(error)),
+  //     (movieList) {
+  //       nowPlayingMovies = [...nowPlayingMovies, ...movieList.results];
+  //       emitReady();
+  //     },
+  //   );
+  // }
+
+  Future<List<Movie>> fetchTrendingMoviesPage(int pageKey) async {
+    final result = await getNowPlayingMoviesUseCase(pageKey);
+    return result.fold(
+      (error) {
+        emit(HomeState.error(error));
+        return [];
       },
+      (movieList) => movieList.results,
     );
+  }
 
-    nowPlayingResult.fold(
-      (error) => emit(HomeState.error(error)),
-      (movieList) {
-        nowPlayingMovies = [...nowPlayingMovies, ...movieList.results];
-        emitReady();
+  Future<List<Movie>> fetchNowPlayingMoviesPage(int pageKey) async {
+    final result = await getTrendingMoviesUseCase(pageKey);
+    return result.fold(
+      (error) {
+        emit(HomeState.error(error));
+        return [];
       },
+      (movieList) => movieList.results,
     );
   }
 
@@ -57,10 +79,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   void emitReady() {
     emit(
-      HomeState.ready(
-        trendingMovies: trendingMovies,
-        nowPlayingMovies: nowPlayingMovies,
-      ),
+      HomeState.ready(),
     );
   }
 }

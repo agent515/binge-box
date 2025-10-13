@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage>
                   child: CircularProgressIndicator(),
                 ),
               );
-            case HomeReady(:final trendingMovies, :final nowPlayingMovies):
+            case HomeReady():
               return Scaffold(
                 appBar: AppBar(
                   title: Text('Binge Box'),
@@ -84,12 +84,16 @@ class _HomePageState extends State<HomePage>
                   controller: _tabController,
                   children: [
                     MovieGrid(
-                      movies: nowPlayingMovies,
+                      key: ValueKey('TrendingMoviesGrid'),
+                      fetchMovies:
+                          context.read<HomeCubit>().fetchTrendingMoviesPage,
                       onMovieTap: (movie) =>
                           context.read<HomeCubit>().goToDetailsPage(movie),
                     ),
                     MovieGrid(
-                      movies: trendingMovies,
+                      key: ValueKey('NowPlayingMoviesGrid'),
+                      fetchMovies:
+                          context.read<HomeCubit>().fetchNowPlayingMoviesPage,
                       onMovieTap: (movie) =>
                           context.read<HomeCubit>().goToDetailsPage(movie),
                     ),

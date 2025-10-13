@@ -8,10 +8,7 @@ part 'home_state.freezed.dart';
 sealed class HomeState with _$HomeState {
   const factory HomeState.initial() = HomeInitial;
   const factory HomeState.loading() = HomeLoading;
-  const factory HomeState.ready({
-    required List<Movie> trendingMovies,
-    required List<Movie> nowPlayingMovies,
-  }) = HomeReady;
+  const factory HomeState.ready() = HomeReady;
   const factory HomeState.goToDetailsPage(Movie movie) = HomeGoToDetailsPage;
   const factory HomeState.error(AppError error) = HomeError;
 }
