@@ -1,6 +1,9 @@
+import 'package:binge_box/injectable/service_locator.dart';
 import 'package:binge_box/presentation/home/cubit/home_cubit.dart';
 import 'package:binge_box/presentation/search/search_page.dart';
 import 'package:binge_box/presentation/widgets/movie_grid.dart';
+import 'package:binge_box/utils/app_router.dart';
+import 'package:binge_box/utils/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +30,7 @@ class HomePageReady extends StatelessWidget {
                 delegate: SearchMoviesDelegate(
                   fetchMovies: context.read<HomeCubit>().searchMovies,
                   onMovieTap: (movie) =>
-                      context.read<HomeCubit>().goToDetailsPage(movie),
+                      getIt<AppRouter>().push(MovieDetailsRoute(movie: movie)),
                 ),
               );
             },
