@@ -3,6 +3,7 @@ import 'package:binge_box/domain/entities/movie/movie.dart';
 import 'package:binge_box/injectable/service_locator.dart';
 import 'package:binge_box/presentation/details/cubit/movie_details_cubit.dart';
 import 'package:binge_box/presentation/details/cubit/movie_details_state.dart';
+import 'package:binge_box/presentation/details/widgets/movie_details_page_ready.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,19 +31,9 @@ class MovieDetailsPage extends StatelessWidget {
                 ),
               );
             case MovieDetailsReady(:final movie, :final bookmarked):
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(movie.title),
-                ),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Title: ${movie.title}'),
-                      Text('Bookmarked: $bookmarked'),
-                    ],
-                  ),
-                ),
+              return MovieDetailsPageReady(
+                movie: movie,
+                bookmarked: bookmarked,
               );
             case MovieDetailsError(:final error):
               return Scaffold(

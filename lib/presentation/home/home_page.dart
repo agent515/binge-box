@@ -2,8 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:binge_box/injectable/service_locator.dart';
 import 'package:binge_box/presentation/home/cubit/home_cubit.dart';
 import 'package:binge_box/presentation/home/cubit/home_state.dart';
-import 'package:binge_box/presentation/search/search_page.dart';
-import 'package:binge_box/presentation/widgets/movie_grid.dart';
+import 'package:binge_box/presentation/home/widgets/home_page_ready.dart';
 import 'package:binge_box/utils/app_router.dart';
 import 'package:binge_box/utils/app_router.gr.dart';
 import 'package:binge_box/utils/app_sizes.dart';
@@ -70,54 +69,7 @@ class _HomePageState extends State<HomePage>
                 ),
               );
             case HomeReady():
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text('Binge Box'),
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        // Navigate to search page
-                        showSearch(
-                          context: context,
-                          delegate: SearchMoviesDelegate(
-                            fetchMovies: context.read<HomeCubit>().searchMovies,
-                            onMovieTap: (movie) => context
-                                .read<HomeCubit>()
-                                .goToDetailsPage(movie),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                  bottom: TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: 'Now Playing'),
-                      Tab(text: 'Trending'),
-                    ],
-                  ),
-                ),
-                body: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    MovieGrid(
-                      key: ValueKey('TrendingMoviesGrid'),
-                      fetchMovies:
-                          context.read<HomeCubit>().fetchTrendingMoviesPage,
-                      onMovieTap: (movie) =>
-                          context.read<HomeCubit>().goToDetailsPage(movie),
-                    ),
-                    MovieGrid(
-                      key: ValueKey('NowPlayingMoviesGrid'),
-                      fetchMovies:
-                          context.read<HomeCubit>().fetchNowPlayingMoviesPage,
-                      onMovieTap: (movie) =>
-                          context.read<HomeCubit>().goToDetailsPage(movie),
-                    ),
-                  ],
-                ),
-              );
+              return HomePageReady(tabController: _tabController);
             case HomeError(:final error):
               return Scaffold(
                 body: Center(
