@@ -67,6 +67,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i337.HomeCubit>(() => _i337.HomeCubit(
           gh<_i255.GetTrendingMoviesUseCase>(),
           gh<_i845.GetNowPlayingMoviesUseCase>(),
+          gh<_i717.SearchMoviesUseCase>(),
         ));
     return this;
   }

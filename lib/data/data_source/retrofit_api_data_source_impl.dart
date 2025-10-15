@@ -20,5 +20,8 @@ abstract class RetrofitApiDataSourceImpl implements RetrofitApiDataSource {
 
   @override
   @GET('/search/movie')
-  Future<GetMovieListDto> searchMovies(@Query('page') int page, String query);
+  Future<GetMovieListDto> searchMovies(
+    @Query('page') int page,
+    @Query('query') String query,
+  );
 }

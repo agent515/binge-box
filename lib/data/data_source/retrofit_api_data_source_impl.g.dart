@@ -74,7 +74,7 @@ class _RetrofitApiDataSourceImpl implements RetrofitApiDataSourceImpl {
   @override
   Future<GetMovieListDto> searchMovies(int page, String query) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'page': page};
+    final queryParameters = <String, dynamic>{r'page': page, r'query': query};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<GetMovieListDto>(
