@@ -53,7 +53,7 @@ Retrofit & Dio (Networking)
 - Clone this repository:
 
 ```
-git clone https://github.com/yourusername/movies-database-app.git
+git clone https://github.com/agent515/binge-box.git
 ```
 
 
