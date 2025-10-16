@@ -6,6 +6,8 @@ import 'package:binge_box/utils/debouncer.dart';
 class SearchMoviesDelegate extends SearchDelegate<Movie?> {
   final Debouncer _debouncer =
       Debouncer(delay: const Duration(milliseconds: 500));
+  String? _lastQuery;
+  Future<void>? _debounceFuture;
   final Future<List<Movie>> Function(int page, String query) fetchMovies;
   final void Function(Movie movie) onMovieTap;
 
@@ -35,10 +37,29 @@ class SearchMoviesDelegate extends SearchDelegate<Movie?> {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
+      // Ensure we don't show previous results when query is cleared.
+      _lastQuery = '';
+      _debounceFuture = null;
       return const Center(child: Text('Search for a movie'));
     }
+    // If the query changed, create a new delayed future. We use a
+    // FutureBuilder below to wait for this future to complete before
+    // showing the results. This avoids calling `showResults` and keeps
+    // the search field focused.
+    if (_lastQuery != query) {
+      _lastQuery = query;
+      _debounceFuture = Future.delayed(_debouncer.delay);
+    }
 
-    return _buildMovieResults();
+    return FutureBuilder(
+      future: _debounceFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return _buildMovieResults();
+        }
+        return const Center(child: CircularProgressIndicator.adaptive());
+      },
+    );
   }
 
   Widget _buildMovieResults() {
