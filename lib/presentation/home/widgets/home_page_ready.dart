@@ -46,6 +46,7 @@ class HomePageReady extends StatelessWidget {
           tabs: [
             Tab(text: 'Now Playing'),
             Tab(text: 'Trending'),
+            Tab(text: 'Bookmarked'),
           ],
         ),
       ),
@@ -57,6 +58,13 @@ class HomePageReady extends StatelessWidget {
               controller: _tabController,
               children: [
                 MovieGrid(
+                  key: ValueKey('NowPlayingMoviesGrid'),
+                  fetchMovies:
+                      context.read<HomeCubit>().fetchNowPlayingMoviesPage,
+                  onMovieTap: (movie) =>
+                      context.read<HomeCubit>().goToDetailsPage(movie),
+                ),
+                MovieGrid(
                   key: ValueKey('TrendingMoviesGrid'),
                   fetchMovies:
                       context.read<HomeCubit>().fetchTrendingMoviesPage,
@@ -64,9 +72,9 @@ class HomePageReady extends StatelessWidget {
                       context.read<HomeCubit>().goToDetailsPage(movie),
                 ),
                 MovieGrid(
-                  key: ValueKey('NowPlayingMoviesGrid'),
+                  key: ValueKey('BookmarksGrid'),
                   fetchMovies:
-                      context.read<HomeCubit>().fetchNowPlayingMoviesPage,
+                      context.read<HomeCubit>().fetchBookmarkedMoviesPage,
                   onMovieTap: (movie) =>
                       context.read<HomeCubit>().goToDetailsPage(movie),
                 ),

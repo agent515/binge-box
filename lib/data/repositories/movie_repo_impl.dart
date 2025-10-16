@@ -123,4 +123,45 @@ class MovieRepoImpl implements MovieRepo {
       );
     }
   }
+
+  @override
+  Future<Either<AppError, GetMovieList>> getBookmarkedMovies(int page) async {
+    try {
+      final bookmarkedIds = await db.getBookmarkedIds();
+      if (bookmarkedIds.isEmpty) {
+        return Right(GetMovieList(
+          page: page,
+          totalPages: 1,
+          totalResults: 0,
+          results: [],
+        ));
+      }
+
+      final allMovies = await db.getAllMovies();
+      // Filter to bookmarked IDs and deduplicate by movie id (multiple
+      // cached rows may exist for different sources but represent the same
+      // movie). Keep the first occurrence.
+      final filtered = allMovies.where((m) => bookmarkedIds.contains(m.id));
+      final Map<int, Movy> unique = {};
+      for (final m in filtered) {
+        unique.putIfAbsent(m.id, () => m);
+      }
+      final results = unique.values.map((m) => m.toEntity()).toList();
+
+      final list = GetMovieList(
+        page: page,
+        totalPages: 1,
+        totalResults: results.length,
+        results: results,
+      );
+      return Right(list);
+    } catch (e) {
+      return Left(
+        AppError(
+          title: 'Get Bookmarked Movies Failed',
+          description: e.toString(),
+        ),
+      );
+    }
+  }
 }

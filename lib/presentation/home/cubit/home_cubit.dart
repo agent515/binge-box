@@ -4,6 +4,7 @@ import 'package:binge_box/domain/entities/movie/movie.dart';
 import 'package:binge_box/domain/use_cases/get_now_playing_movies_use_case.dart';
 import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart';
 import 'package:binge_box/domain/use_cases/search_movies_use_case.dart';
+import 'package:binge_box/domain/use_cases/get_bookmarked_movies_use_case.dart';
 import 'package:binge_box/presentation/home/cubit/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -14,14 +15,17 @@ class HomeCubit extends Cubit<HomeState> {
     this.getTrendingMoviesUseCase,
     this.getNowPlayingMoviesUseCase,
     this.searchMoviesUseCase,
+    this.getBookmarkedMoviesUseCase,
   ) : super(HomeState.ready());
 
   final GetTrendingMoviesUseCase getTrendingMoviesUseCase;
   final GetNowPlayingMoviesUseCase getNowPlayingMoviesUseCase;
   final SearchMoviesUseCase searchMoviesUseCase;
+  final GetBookmarkedMoviesUseCase getBookmarkedMoviesUseCase;
 
   int totalTrendingPages = 1;
   int totalNowPlayingPages = 1;
+  int totalBookmarkedPages = 1;
 
   Future<List<Movie>> fetchTrendingMoviesPage(int pageKey) async {
     if (pageKey > totalTrendingPages) return <Movie>[];
@@ -32,7 +36,6 @@ class HomeCubit extends Cubit<HomeState> {
       },
       (movieList) {
         totalTrendingPages = movieList.totalPages;
-        if (pageKey > movieList.totalPages) return <Movie>[];
         return movieList.results;
       },
     );
@@ -47,8 +50,6 @@ class HomeCubit extends Cubit<HomeState> {
       },
       (movieList) {
         totalNowPlayingPages = movieList.totalPages;
-
-        if (pageKey > movieList.totalPages) return <Movie>[];
         return movieList.results;
       },
     );
@@ -66,6 +67,18 @@ class HomeCubit extends Cubit<HomeState> {
         return [];
       },
       (movieList) => movieList.results,
+    );
+  }
+
+  Future<List<Movie>> fetchBookmarkedMoviesPage(int pageKey) async {
+    if (pageKey > totalBookmarkedPages) return <Movie>[];
+    final result = await getBookmarkedMoviesUseCase(pageKey);
+    return result.fold(
+      (error) => [],
+      (movieList) {
+        totalBookmarkedPages = movieList.totalPages;
+        return movieList.results;
+      },
     );
   }
 

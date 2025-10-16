@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 
 abstract class MovieRepo {
   Future<Either<AppError, GetMovieList>> getTrendingMovies(int page);
+  Future<Either<AppError, GetMovieList>> getBookmarkedMovies(int page);
   Future<Either<AppError, GetMovieList>> getNowPlayingMovies(int page);
   Future<Either<AppError, GetMovieList>> searchMovies(int page, String query);
 }
