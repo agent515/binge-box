@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:binge_box/domain/entities/movie/movie.dart';
 import 'package:binge_box/presentation/widgets/movie_card.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +10,12 @@ class MovieGrid extends StatefulWidget {
     super.key,
     required this.onMovieTap,
     required this.fetchMovies,
+    this.refreshStream,
   });
 
   final Future<List<Movie>> Function(int pageKey) fetchMovies;
   final void Function(Movie movie) onMovieTap;
+  final Stream<void>? refreshStream;
 
   @override
   State<MovieGrid> createState() => _MovieGridState();
@@ -26,10 +30,23 @@ class _MovieGridState extends State<MovieGrid>
     fetchPage: widget.fetchMovies,
   );
 
+  StreamSubscription<void>? _refreshSub;
+
   @override
   void dispose() {
+    _refreshSub?.cancel();
     _pagingController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.refreshStream != null) {
+      _refreshSub = widget.refreshStream!.listen((_) {
+        _pagingController.refresh();
+      });
+    }
   }
 
   @override

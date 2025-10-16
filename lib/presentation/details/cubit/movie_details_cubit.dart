@@ -5,12 +5,14 @@ import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:binge_box/domain/use_cases/check_bookmark_use_case.dart';
 import 'package:binge_box/domain/use_cases/toggle_bookmark_use_case.dart';
+import 'package:binge_box/domain/use_cases/cache_movie_use_case.dart';
 
 @injectable
 class MovieDetailsCubit extends Cubit<MovieDetailsState> {
   MovieDetailsCubit(
     this._checkBookmarkUseCase,
     this._toggleBookmarkUseCase,
+    this._cacheMovieUseCase,
     @factoryParam Movie movie,
   )   : _movie = movie,
         super(MovieDetailsState.initial()) {
@@ -19,6 +21,7 @@ class MovieDetailsCubit extends Cubit<MovieDetailsState> {
 
   final CheckBookmarkUseCase _checkBookmarkUseCase;
   final ToggleBookmarkUseCase _toggleBookmarkUseCase;
+  final CacheMovieUseCase _cacheMovieUseCase;
   final Movie _movie;
   bool _bookmarked = false;
 
@@ -56,6 +59,11 @@ class MovieDetailsCubit extends Cubit<MovieDetailsState> {
       (error) => emitError(error),
       (isBookmarked) {
         _bookmarked = isBookmarked;
+        if (_bookmarked) {
+          // Cache the movie details locally so bookmarked tab can show it
+          // even if it wasn't previously present in cached lists.
+          Future.microtask(() => _cacheMovieUseCase.call(_movie));
+        }
         emitReady();
       },
     );

@@ -5,31 +5,37 @@ import 'package:binge_box/domain/use_cases/get_now_playing_movies_use_case.dart'
 import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart';
 import 'package:binge_box/domain/use_cases/search_movies_use_case.dart';
 import 'package:binge_box/domain/use_cases/get_bookmarked_movies_use_case.dart';
+import 'package:binge_box/domain/use_cases/get_bookmarks_changed_use_case.dart';
 import 'package:binge_box/presentation/home/cubit/home_state.dart';
+import 'package:binge_box/domain/entities/bookmark_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit(
-    this.getTrendingMoviesUseCase,
-    this.getNowPlayingMoviesUseCase,
-    this.searchMoviesUseCase,
-    this.getBookmarkedMoviesUseCase,
+    this._getTrendingMoviesUseCase,
+    this._getNowPlayingMoviesUseCase,
+    this._searchMoviesUseCase,
+    this._getBookmarkedMoviesUseCase,
+    this._getBookmarksChangedUseCase,
   ) : super(HomeState.ready());
 
-  final GetTrendingMoviesUseCase getTrendingMoviesUseCase;
-  final GetNowPlayingMoviesUseCase getNowPlayingMoviesUseCase;
-  final SearchMoviesUseCase searchMoviesUseCase;
-  final GetBookmarkedMoviesUseCase getBookmarkedMoviesUseCase;
+  final GetTrendingMoviesUseCase _getTrendingMoviesUseCase;
+  final GetNowPlayingMoviesUseCase _getNowPlayingMoviesUseCase;
+  final SearchMoviesUseCase _searchMoviesUseCase;
+  final GetBookmarkedMoviesUseCase _getBookmarkedMoviesUseCase;
+  final GetBookmarksChangedUseCase _getBookmarksChangedUseCase;
+  Stream<BookmarkEvent>? _bookmarksStream;
 
   int totalTrendingPages = 1;
   int totalNowPlayingPages = 1;
   int totalBookmarkedPages = 1;
+  // (removed counter-based refresh)
 
   Future<List<Movie>> fetchTrendingMoviesPage(int pageKey) async {
     if (pageKey > totalTrendingPages) return <Movie>[];
-    final result = await getTrendingMoviesUseCase(pageKey);
+    final result = await _getTrendingMoviesUseCase(pageKey);
     return result.fold(
       (error) {
         return [];
@@ -43,7 +49,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<List<Movie>> fetchNowPlayingMoviesPage(int pageKey) async {
     if (pageKey > totalTrendingPages) return <Movie>[];
-    final result = await getNowPlayingMoviesUseCase(pageKey);
+    final result = await _getNowPlayingMoviesUseCase(pageKey);
     return result.fold(
       (error) {
         return [];
@@ -56,7 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<List<Movie>> searchMovies(int pageKey, String query) async {
-    final result = await searchMoviesUseCase(
+    final result = await _searchMoviesUseCase(
       SearchMoviesUseCaseParams(
         page: pageKey,
         query: query,
@@ -72,7 +78,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<List<Movie>> fetchBookmarkedMoviesPage(int pageKey) async {
     if (pageKey > totalBookmarkedPages) return <Movie>[];
-    final result = await getBookmarkedMoviesUseCase(pageKey);
+    final result = await _getBookmarkedMoviesUseCase(pageKey);
     return result.fold(
       (error) => [],
       (movieList) {
@@ -90,5 +96,19 @@ class HomeCubit extends Cubit<HomeState> {
     emit(
       HomeState.ready(),
     );
+  }
+
+  // Bookmark updates are emitted via the bookmarksChanged stream use case.
+
+  Stream<BookmarkEvent> get bookmarksChanged {
+    // Lazily initialize the stream from the use case.
+    if (_bookmarksStream == null) {
+      _initBookmarksStream();
+    }
+    return _bookmarksStream ?? const Stream.empty();
+  }
+
+  Future<void> _initBookmarksStream() async {
+    _bookmarksStream = _getBookmarksChangedUseCase();
   }
 }

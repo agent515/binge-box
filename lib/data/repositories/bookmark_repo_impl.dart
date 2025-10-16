@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:binge_box/utils/app_error.dart';
+import 'package:binge_box/domain/entities/bookmark_event.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:binge_box/domain/repositories/bookmark_repo.dart';
@@ -9,6 +12,11 @@ class BookmarkRepoImpl implements BookmarkRepo {
   BookmarkRepoImpl({required this.db});
 
   final AppDatabase db;
+  final StreamController<BookmarkEvent> _bookmarksController =
+      StreamController<BookmarkEvent>.broadcast();
+
+  @override
+  Stream<BookmarkEvent> get bookmarksChanged => _bookmarksController.stream;
 
   @override
   Future<Either<AppError, bool>> isBookmarked(int movieId) async {
@@ -44,6 +52,7 @@ class BookmarkRepoImpl implements BookmarkRepo {
   Future<Either<AppError, void>> addBookmark(int movieId) async {
     try {
       await db.addBookmark(movieId);
+      _bookmarksController.add(BookmarkEvent(movieId: movieId, added: true));
       return Right(null);
     } catch (e) {
       return Left(
@@ -59,6 +68,7 @@ class BookmarkRepoImpl implements BookmarkRepo {
   Future<Either<AppError, void>> removeBookmark(int movieId) async {
     try {
       await db.removeBookmark(movieId);
+      _bookmarksController.add(BookmarkEvent(movieId: movieId, added: false));
       return Right(null);
     } catch (e) {
       return Left(

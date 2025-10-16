@@ -7,6 +7,8 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:binge_box/data/local/drift_database.dart';
 import 'package:binge_box/data/dto/movie/movie_dto.dart';
+import 'package:binge_box/domain/entities/movie/movie.dart';
+import 'package:drift/drift.dart';
 
 @Singleton(as: MovieRepo)
 class MovieRepoImpl implements MovieRepo {
@@ -118,6 +120,21 @@ class MovieRepoImpl implements MovieRepo {
       return Left(
         AppError(
           title: 'Search Movies Failed',
+          description: e.toString(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<AppError, void>> upsertMovie(Movie movie) async {
+    try {
+      await db.upsertMovies([movie.toDto().toCompanion(source: 'cached')]);
+      return Right(null);
+    } catch (e) {
+      return Left(
+        AppError(
+          title: 'Cache Movie Failed',
           description: e.toString(),
         ),
       );

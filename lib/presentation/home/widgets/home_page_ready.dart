@@ -28,9 +28,9 @@ class HomePageReady extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () {
+            onPressed: () async {
               // Navigate to search page
-              showSearch(
+              await showSearch(
                 context: context,
                 delegate: SearchMoviesDelegate(
                   fetchMovies: context.read<HomeCubit>().searchMovies,
@@ -38,6 +38,8 @@ class HomePageReady extends StatelessWidget {
                       getIt<AppRouter>().push(MovieDetailsRoute(movie: movie)),
                 ),
               );
+
+              // Bookmarks grid refreshes via the bookmarksChanged stream.
             },
           ),
         ],
@@ -77,6 +79,7 @@ class HomePageReady extends StatelessWidget {
                       context.read<HomeCubit>().fetchBookmarkedMoviesPage,
                   onMovieTap: (movie) =>
                       context.read<HomeCubit>().goToDetailsPage(movie),
+                  refreshStream: context.read<HomeCubit>().bookmarksChanged,
                 ),
               ],
             ),

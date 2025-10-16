@@ -17,9 +17,12 @@ import 'package:binge_box/domain/data_source/retrofit_api_data_source.dart'
 import 'package:binge_box/domain/entities/movie/movie.dart' as _i406;
 import 'package:binge_box/domain/repositories/bookmark_repo.dart' as _i687;
 import 'package:binge_box/domain/repositories/movie_repo.dart' as _i600;
+import 'package:binge_box/domain/use_cases/cache_movie_use_case.dart' as _i427;
 import 'package:binge_box/domain/use_cases/check_bookmark_use_case.dart' as _i3;
 import 'package:binge_box/domain/use_cases/get_bookmarked_movies_use_case.dart'
     as _i370;
+import 'package:binge_box/domain/use_cases/get_bookmarks_changed_use_case.dart'
+    as _i283;
 import 'package:binge_box/domain/use_cases/get_now_playing_movies_use_case.dart'
     as _i845;
 import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart'
@@ -73,6 +76,10 @@ extension GetItInjectableX on _i174.GetIt {
           retrofitApiDataSource: gh<_i761.RetrofitApiDataSource>(),
           db: gh<_i356.AppDatabase>(),
         ));
+    gh.factory<_i283.GetBookmarksChangedUseCase>(
+        () => _i283.GetBookmarksChangedUseCase(gh<_i687.BookmarkRepo>()));
+    gh.factory<_i427.CacheMovieUseCase>(
+        () => _i427.CacheMovieUseCase(gh<_i600.MovieRepo>()));
     gh.factory<_i3.CheckBookmarkUseCase>(
         () => _i3.CheckBookmarkUseCase(gh<_i687.BookmarkRepo>()));
     gh.factory<_i860.ToggleBookmarkUseCase>(
@@ -85,12 +92,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i255.GetTrendingMoviesUseCase(gh<_i600.MovieRepo>()));
     gh.factory<_i370.GetBookmarkedMoviesUseCase>(
         () => _i370.GetBookmarkedMoviesUseCase(gh<_i600.MovieRepo>()));
-    gh.factory<_i337.HomeCubit>(() => _i337.HomeCubit(
-          gh<_i255.GetTrendingMoviesUseCase>(),
-          gh<_i845.GetNowPlayingMoviesUseCase>(),
-          gh<_i717.SearchMoviesUseCase>(),
-          gh<_i370.GetBookmarkedMoviesUseCase>(),
-        ));
     gh.factoryParam<_i523.MovieDetailsCubit, _i406.Movie, dynamic>((
       movie,
       _,
@@ -98,7 +99,15 @@ extension GetItInjectableX on _i174.GetIt {
         _i523.MovieDetailsCubit(
           gh<_i3.CheckBookmarkUseCase>(),
           gh<_i860.ToggleBookmarkUseCase>(),
+          gh<_i427.CacheMovieUseCase>(),
           movie,
+        ));
+    gh.factory<_i337.HomeCubit>(() => _i337.HomeCubit(
+          gh<_i255.GetTrendingMoviesUseCase>(),
+          gh<_i845.GetNowPlayingMoviesUseCase>(),
+          gh<_i717.SearchMoviesUseCase>(),
+          gh<_i370.GetBookmarkedMoviesUseCase>(),
+          gh<_i283.GetBookmarksChangedUseCase>(),
         ));
     return this;
   }
