@@ -38,9 +38,7 @@ class ConnectivityService {
     checkOnce();
     _timer = Timer.periodic(interval, (_) async {
       final online = await checkOnce();
-      if (_lastOnline == null || _lastOnline != online) {
-        _controller.add(online);
-      }
+      _controller.add(online);
     });
   }
 
