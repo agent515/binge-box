@@ -1,4 +1,6 @@
 import 'package:binge_box/domain/entities/movie/movie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:binge_box/presentation/details/cubit/movie_details_cubit.dart';
 import 'package:binge_box/injectable/service_locator.dart';
 import 'package:binge_box/utils/app_sizes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -40,10 +42,14 @@ class MovieDetailsPosterSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       BackButton(color: Colors.white),
-                      Icon(
-                        bookmarked ? Icons.bookmark : Icons.bookmark_border,
-                        color: Colors.white,
-                        size: 30,
+                      GestureDetector(
+                        onTap: () async =>
+                            context.read<MovieDetailsCubit>().toggleBookmark(),
+                        child: Icon(
+                          bookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          color: Colors.white,
+                          size: 30,
+                        ),
                       ),
                     ],
                   ),

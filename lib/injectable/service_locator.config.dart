@@ -9,21 +9,28 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:binge_box/data/local/drift_database.dart' as _i356;
+import 'package:binge_box/data/repositories/bookmark_repo_impl.dart' as _i940;
 import 'package:binge_box/data/repositories/movie_repo_impl.dart' as _i801;
 import 'package:binge_box/domain/data_source/retrofit_api_data_source.dart'
     as _i761;
 import 'package:binge_box/domain/entities/movie/movie.dart' as _i406;
+import 'package:binge_box/domain/repositories/bookmark_repo.dart' as _i687;
 import 'package:binge_box/domain/repositories/movie_repo.dart' as _i600;
+import 'package:binge_box/domain/use_cases/check_bookmark_use_case.dart' as _i3;
 import 'package:binge_box/domain/use_cases/get_now_playing_movies_use_case.dart'
     as _i845;
 import 'package:binge_box/domain/use_cases/get_trending_movies_use_case.dart'
     as _i255;
 import 'package:binge_box/domain/use_cases/search_movies_use_case.dart'
     as _i717;
+import 'package:binge_box/domain/use_cases/toggle_bookmark_use_case.dart'
+    as _i860;
 import 'package:binge_box/injectable/modules/api_module.dart' as _i1054;
 import 'package:binge_box/injectable/modules/app_router_module.dart' as _i29;
 import 'package:binge_box/injectable/modules/app_sizes_module.dart' as _i407;
 import 'package:binge_box/injectable/modules/connectivity_module.dart' as _i425;
+import 'package:binge_box/injectable/modules/local_db_module.dart' as _i195;
 import 'package:binge_box/presentation/details/cubit/movie_details_cubit.dart'
     as _i523;
 import 'package:binge_box/presentation/home/cubit/home_cubit.dart' as _i337;
@@ -48,20 +55,24 @@ extension GetItInjectableX on _i174.GetIt {
     final appRouterModule = _$AppRouterModule();
     final appSizesModule = _$AppSizesModule();
     final connectivityModule = _$ConnectivityModule();
+    final localDbModule = _$LocalDbModule();
     gh.singleton<_i361.Dio>(() => apiModule.client);
     gh.lazySingleton<_i795.AppRouter>(() => appRouterModule.appRouter);
     gh.lazySingleton<_i643.AppSizes>(() => appSizesModule.instance);
     gh.lazySingleton<_i425.ConnectivityService>(
         () => connectivityModule.connectivityService());
+    gh.lazySingleton<_i356.AppDatabase>(
+        () => localDbModule.provideAppDatabase());
     gh.factory<_i761.RetrofitApiDataSource>(
         () => apiModule.apiDataSource(gh<_i361.Dio>()));
-    gh.factoryParam<_i523.MovieDetailsCubit, _i406.Movie, dynamic>((
-      _movie,
-      _,
-    ) =>
-        _i523.MovieDetailsCubit(_movie));
+    gh.singleton<_i687.BookmarkRepo>(
+        () => _i940.BookmarkRepoImpl(db: gh<_i356.AppDatabase>()));
     gh.singleton<_i600.MovieRepo>(() => _i801.MovieRepoImpl(
         retrofitApiDataSource: gh<_i761.RetrofitApiDataSource>()));
+    gh.factory<_i3.CheckBookmarkUseCase>(
+        () => _i3.CheckBookmarkUseCase(gh<_i687.BookmarkRepo>()));
+    gh.factory<_i860.ToggleBookmarkUseCase>(
+        () => _i860.ToggleBookmarkUseCase(gh<_i687.BookmarkRepo>()));
     gh.factory<_i717.SearchMoviesUseCase>(
         () => _i717.SearchMoviesUseCase(gh<_i600.MovieRepo>()));
     gh.factory<_i845.GetNowPlayingMoviesUseCase>(
@@ -72,6 +83,15 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i255.GetTrendingMoviesUseCase>(),
           gh<_i845.GetNowPlayingMoviesUseCase>(),
           gh<_i717.SearchMoviesUseCase>(),
+        ));
+    gh.factoryParam<_i523.MovieDetailsCubit, _i406.Movie, dynamic>((
+      movie,
+      _,
+    ) =>
+        _i523.MovieDetailsCubit(
+          gh<_i3.CheckBookmarkUseCase>(),
+          gh<_i860.ToggleBookmarkUseCase>(),
+          movie,
         ));
     return this;
   }
@@ -84,3 +104,5 @@ class _$AppRouterModule extends _i29.AppRouterModule {}
 class _$AppSizesModule extends _i407.AppSizesModule {}
 
 class _$ConnectivityModule extends _i425.ConnectivityModule {}
+
+class _$LocalDbModule extends _i195.LocalDbModule {}
