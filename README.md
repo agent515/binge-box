@@ -1,16 +1,73 @@
-# binge_box
+# 🎬 Movie Database App
 
-A new Flutter project.
+A Flutter-based Movies Database Application powered by the TMDB API
+.
+Browse trending and now-playing movies, search your favorites, and bookmark them — even offline!
 
-## Getting Started
+### 🚀 Overview
 
-This project is a starting point for a Flutter application.
+This app uses the TMDB API to fetch and display movie data.
+It supports offline usage by caching API responses locally, ensuring users can still browse previously viewed and bookmarked movies without an internet connection.
 
-A few resources to get you started if this is your first Flutter project:
+### 📱 Features
+#### 🏠 Home
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Displays Trending and Now Playing movies.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Fetches data from TMDB and stores it locally for offline access.
+
+#### 🎥 Movie Details
+
+Tap any movie to view detailed information including synopsis, rating, and release date.
+
+#### 🔖 Bookmarks
+
+Bookmark your favorite movies.
+
+View and manage saved movies in a separate “Saved” section.
+
+Works seamlessly offline.
+
+#### 🔍 Search
+
+Search for any movie by title using the TMDB search API.
+
+Implements debounced search — results update automatically when the user stops typing (no need for a search button).
+
+### 🧩 Tech Stack
+
+Flutter (Frontend)
+
+TMDB API (Data Source)
+
+Local Database (Offline support – Drift)
+
+Retrofit & Dio (Networking)
+
+
+### 🛠️ Setup
+
+- Clone this repository:
+
+```
+git clone https://github.com/yourusername/movies-database-app.git
+```
+
+
+- Get dependencies:
+
+```
+flutter pub get
+```
+
+
+- Add your TMDB Access Token in `.env` file.
+```
+AUTH_TOKEN=<TMDB_ACCESS_TOKEN>
+```
+
+- Run the app:
+
+```
+flutter run
+```
