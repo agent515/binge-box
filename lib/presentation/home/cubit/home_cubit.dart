@@ -20,23 +20,37 @@ class HomeCubit extends Cubit<HomeState> {
   final GetNowPlayingMoviesUseCase getNowPlayingMoviesUseCase;
   final SearchMoviesUseCase searchMoviesUseCase;
 
-  Future<List<Movie>> fetchTrendingMoviesPage(int pageKey) async {
-    final result = await getNowPlayingMoviesUseCase(pageKey);
-    return result.fold(
-      (error) {
-        return [];
-      },
-      (movieList) => movieList.results,
-    );
-  }
+  int totalTrendingPages = 1;
+  int totalNowPlayingPages = 1;
 
-  Future<List<Movie>> fetchNowPlayingMoviesPage(int pageKey) async {
+  Future<List<Movie>> fetchTrendingMoviesPage(int pageKey) async {
+    if (pageKey > totalTrendingPages) return <Movie>[];
     final result = await getTrendingMoviesUseCase(pageKey);
     return result.fold(
       (error) {
         return [];
       },
-      (movieList) => movieList.results,
+      (movieList) {
+        totalTrendingPages = movieList.totalPages;
+        if (pageKey > movieList.totalPages) return <Movie>[];
+        return movieList.results;
+      },
+    );
+  }
+
+  Future<List<Movie>> fetchNowPlayingMoviesPage(int pageKey) async {
+    if (pageKey > totalTrendingPages) return <Movie>[];
+    final result = await getNowPlayingMoviesUseCase(pageKey);
+    return result.fold(
+      (error) {
+        return [];
+      },
+      (movieList) {
+        totalNowPlayingPages = movieList.totalPages;
+
+        if (pageKey > movieList.totalPages) return <Movie>[];
+        return movieList.results;
+      },
     );
   }
 

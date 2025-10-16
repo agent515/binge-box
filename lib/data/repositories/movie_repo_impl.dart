@@ -5,19 +5,53 @@ import 'package:binge_box/domain/repositories/movie_repo.dart';
 import 'package:binge_box/utils/app_error.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:binge_box/data/local/drift_database.dart';
+import 'package:binge_box/data/dto/movie/movie_dto.dart';
 
 @Singleton(as: MovieRepo)
 class MovieRepoImpl implements MovieRepo {
   final RetrofitApiDataSource retrofitApiDataSource;
 
-  MovieRepoImpl({required this.retrofitApiDataSource});
+  final AppDatabase db;
+
+  MovieRepoImpl({required this.retrofitApiDataSource, required this.db});
 
   @override
   Future<Either<AppError, GetMovieList>> getTrendingMovies(int page) async {
     try {
       final dto = await retrofitApiDataSource.getTrendingMovies(page);
-      return Right(dto.toEntity());
+      final entity = dto.toEntity();
+
+      // Cache the movies into local DB (best-effort)
+      try {
+        final companions = dto.results
+            .map((mDto) => mDto.toCompanion(source: 'trending'))
+            .toList();
+        await db.upsertMovies(companions);
+      } catch (_) {
+        // ignore caching errors
+      }
+
+      return Right(entity);
     } catch (e) {
+      // On network failure, try to return cached movies
+      try {
+        final cached = await db.getMoviesBySource('trending');
+        if (cached.isNotEmpty) {
+          final results = cached.map((m) => m.toEntity()).toList();
+
+          final fallback = GetMovieList(
+            page: page,
+            totalPages: 1,
+            totalResults: results.length,
+            results: results,
+          );
+          return Right(fallback);
+        }
+      } catch (_) {
+        // ignore DB read errors
+      }
+
       return Left(
         AppError(
           title: 'Get Trending Movies Failed',
@@ -31,8 +65,38 @@ class MovieRepoImpl implements MovieRepo {
   Future<Either<AppError, GetMovieList>> getNowPlayingMovies(int page) async {
     try {
       final dto = await retrofitApiDataSource.getNowPlayingMovies(page);
-      return Right(dto.toEntity());
+      final entity = dto.toEntity();
+
+      // Cache the movies into local DB (best-effort)
+      try {
+        final companions = dto.results
+            .map((mDto) => mDto.toCompanion(source: 'now_playing'))
+            .toList();
+        await db.upsertMovies(companions);
+      } catch (_) {
+        // ignore caching errors
+      }
+
+      return Right(entity);
     } catch (e) {
+      // On network failure, try to return cached movies
+      try {
+        final cached = await db.getMoviesBySource('now_playing');
+        if (cached.isNotEmpty) {
+          final results = cached.map((m) => m.toEntity()).toList();
+
+          final fallback = GetMovieList(
+            page: page,
+            totalPages: 1,
+            totalResults: results.length,
+            results: results,
+          );
+          return Right(fallback);
+        }
+      } catch (_) {
+        // ignore DB read errors
+      }
+
       return Left(
         AppError(
           title: 'Get Now Playing Movies Failed',

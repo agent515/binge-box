@@ -1,4 +1,6 @@
+import "package:binge_box/data/local/drift_database.dart";
 import "package:binge_box/domain/entities/movie/movie.dart";
+import "package:drift/drift.dart" hide JsonKey;
 import "package:freezed_annotation/freezed_annotation.dart";
 
 part 'movie_dto.freezed.dart';
@@ -25,8 +27,43 @@ extension MovieDtoExtension on MovieDto {
   Movie toEntity() => Movie(
         id: id,
         title: title,
-        posterPath: 'https://image.tmdb.org/t/p/w500$posterPath',
-        backdropPath: 'https://image.tmdb.org/t/p/w500$backdropPath',
+        posterPath: posterPath != null
+            ? 'https://image.tmdb.org/t/p/w500$posterPath'
+            : null,
+        backdropPath: backdropPath != null
+            ? 'https://image.tmdb.org/t/p/w500$backdropPath'
+            : null,
+        originalTitle: originalTitle,
+        releaseDate: releaseDate,
+        voteAverage: voteAverage,
+        overview: overview,
+      );
+
+  Insertable<Movy> toCompanion({String source = 'unknown'}) {
+    return RawValuesInsertable({
+      'id': Constant(id),
+      'source': Constant(source),
+      'title': Constant(title),
+      'poster_path': Constant(posterPath),
+      'backdrop_path': Constant(backdropPath),
+      'original_title': Constant(originalTitle),
+      'release_date': Constant(releaseDate),
+      'vote_average': Constant(voteAverage),
+      'overview': Constant(overview),
+    });
+  }
+}
+
+extension MovyExtension on Movy {
+  Movie toEntity() => Movie(
+        id: id,
+        title: title,
+        posterPath: posterPath != null
+            ? 'https://image.tmdb.org/t/p/w500$posterPath'
+            : null,
+        backdropPath: backdropPath != null
+            ? 'https://image.tmdb.org/t/p/w500$backdropPath'
+            : null,
         originalTitle: originalTitle,
         releaseDate: releaseDate,
         voteAverage: voteAverage,

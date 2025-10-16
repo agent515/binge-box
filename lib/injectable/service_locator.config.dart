@@ -68,7 +68,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i687.BookmarkRepo>(
         () => _i940.BookmarkRepoImpl(db: gh<_i356.AppDatabase>()));
     gh.singleton<_i600.MovieRepo>(() => _i801.MovieRepoImpl(
-        retrofitApiDataSource: gh<_i761.RetrofitApiDataSource>()));
+          retrofitApiDataSource: gh<_i761.RetrofitApiDataSource>(),
+          db: gh<_i356.AppDatabase>(),
+        ));
     gh.factory<_i3.CheckBookmarkUseCase>(
         () => _i3.CheckBookmarkUseCase(gh<_i687.BookmarkRepo>()));
     gh.factory<_i860.ToggleBookmarkUseCase>(

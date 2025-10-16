@@ -12,11 +12,16 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+      'source', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _posterPathMeta =
       const VerificationMeta('posterPath');
@@ -58,6 +63,7 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
   List<GeneratedColumn> get $columns => [
         id,
         title,
+        source,
         posterPath,
         backdropPath,
         originalTitle,
@@ -77,12 +83,20 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
           _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(_sourceMeta,
+          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
     }
     if (data.containsKey('poster_path')) {
       context.handle(
@@ -126,7 +140,7 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {id, source};
   @override
   Movy map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -135,6 +149,8 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      source: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source'])!,
       posterPath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}poster_path']),
       backdropPath: attachedDatabase.typeMapping
@@ -159,6 +175,7 @@ class $MoviesTable extends Movies with TableInfo<$MoviesTable, Movy> {
 class Movy extends DataClass implements Insertable<Movy> {
   final int id;
   final String title;
+  final String source;
   final String? posterPath;
   final String? backdropPath;
   final String originalTitle;
@@ -168,6 +185,7 @@ class Movy extends DataClass implements Insertable<Movy> {
   const Movy(
       {required this.id,
       required this.title,
+      required this.source,
       this.posterPath,
       this.backdropPath,
       required this.originalTitle,
@@ -179,6 +197,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
+    map['source'] = Variable<String>(source);
     if (!nullToAbsent || posterPath != null) {
       map['poster_path'] = Variable<String>(posterPath);
     }
@@ -200,6 +219,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     return MoviesCompanion(
       id: Value(id),
       title: Value(title),
+      source: Value(source),
       posterPath: posterPath == null && nullToAbsent
           ? const Value.absent()
           : Value(posterPath),
@@ -223,6 +243,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     return Movy(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
+      source: serializer.fromJson<String>(json['source']),
       posterPath: serializer.fromJson<String?>(json['posterPath']),
       backdropPath: serializer.fromJson<String?>(json['backdropPath']),
       originalTitle: serializer.fromJson<String>(json['originalTitle']),
@@ -237,6 +258,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
+      'source': serializer.toJson<String>(source),
       'posterPath': serializer.toJson<String?>(posterPath),
       'backdropPath': serializer.toJson<String?>(backdropPath),
       'originalTitle': serializer.toJson<String>(originalTitle),
@@ -249,6 +271,7 @@ class Movy extends DataClass implements Insertable<Movy> {
   Movy copyWith(
           {int? id,
           String? title,
+          String? source,
           Value<String?> posterPath = const Value.absent(),
           Value<String?> backdropPath = const Value.absent(),
           String? originalTitle,
@@ -258,6 +281,7 @@ class Movy extends DataClass implements Insertable<Movy> {
       Movy(
         id: id ?? this.id,
         title: title ?? this.title,
+        source: source ?? this.source,
         posterPath: posterPath.present ? posterPath.value : this.posterPath,
         backdropPath:
             backdropPath.present ? backdropPath.value : this.backdropPath,
@@ -270,6 +294,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     return Movy(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
+      source: data.source.present ? data.source.value : this.source,
       posterPath:
           data.posterPath.present ? data.posterPath.value : this.posterPath,
       backdropPath: data.backdropPath.present
@@ -291,6 +316,7 @@ class Movy extends DataClass implements Insertable<Movy> {
     return (StringBuffer('Movy(')
           ..write('id: $id, ')
           ..write('title: $title, ')
+          ..write('source: $source, ')
           ..write('posterPath: $posterPath, ')
           ..write('backdropPath: $backdropPath, ')
           ..write('originalTitle: $originalTitle, ')
@@ -302,7 +328,7 @@ class Movy extends DataClass implements Insertable<Movy> {
   }
 
   @override
-  int get hashCode => Object.hash(id, title, posterPath, backdropPath,
+  int get hashCode => Object.hash(id, title, source, posterPath, backdropPath,
       originalTitle, releaseDate, voteAverage, overview);
   @override
   bool operator ==(Object other) =>
@@ -310,6 +336,7 @@ class Movy extends DataClass implements Insertable<Movy> {
       (other is Movy &&
           other.id == this.id &&
           other.title == this.title &&
+          other.source == this.source &&
           other.posterPath == this.posterPath &&
           other.backdropPath == this.backdropPath &&
           other.originalTitle == this.originalTitle &&
@@ -321,74 +348,90 @@ class Movy extends DataClass implements Insertable<Movy> {
 class MoviesCompanion extends UpdateCompanion<Movy> {
   final Value<int> id;
   final Value<String> title;
+  final Value<String> source;
   final Value<String?> posterPath;
   final Value<String?> backdropPath;
   final Value<String> originalTitle;
   final Value<String?> releaseDate;
   final Value<double> voteAverage;
   final Value<String?> overview;
+  final Value<int> rowid;
   const MoviesCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
+    this.source = const Value.absent(),
     this.posterPath = const Value.absent(),
     this.backdropPath = const Value.absent(),
     this.originalTitle = const Value.absent(),
     this.releaseDate = const Value.absent(),
     this.voteAverage = const Value.absent(),
     this.overview = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   MoviesCompanion.insert({
-    this.id = const Value.absent(),
+    required int id,
     required String title,
+    required String source,
     this.posterPath = const Value.absent(),
     this.backdropPath = const Value.absent(),
     required String originalTitle,
     this.releaseDate = const Value.absent(),
     required double voteAverage,
     this.overview = const Value.absent(),
-  })  : title = Value(title),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        title = Value(title),
+        source = Value(source),
         originalTitle = Value(originalTitle),
         voteAverage = Value(voteAverage);
   static Insertable<Movy> custom({
     Expression<int>? id,
     Expression<String>? title,
+    Expression<String>? source,
     Expression<String>? posterPath,
     Expression<String>? backdropPath,
     Expression<String>? originalTitle,
     Expression<String>? releaseDate,
     Expression<double>? voteAverage,
     Expression<String>? overview,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
+      if (source != null) 'source': source,
       if (posterPath != null) 'poster_path': posterPath,
       if (backdropPath != null) 'backdrop_path': backdropPath,
       if (originalTitle != null) 'original_title': originalTitle,
       if (releaseDate != null) 'release_date': releaseDate,
       if (voteAverage != null) 'vote_average': voteAverage,
       if (overview != null) 'overview': overview,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   MoviesCompanion copyWith(
       {Value<int>? id,
       Value<String>? title,
+      Value<String>? source,
       Value<String?>? posterPath,
       Value<String?>? backdropPath,
       Value<String>? originalTitle,
       Value<String?>? releaseDate,
       Value<double>? voteAverage,
-      Value<String?>? overview}) {
+      Value<String?>? overview,
+      Value<int>? rowid}) {
     return MoviesCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
+      source: source ?? this.source,
       posterPath: posterPath ?? this.posterPath,
       backdropPath: backdropPath ?? this.backdropPath,
       originalTitle: originalTitle ?? this.originalTitle,
       releaseDate: releaseDate ?? this.releaseDate,
       voteAverage: voteAverage ?? this.voteAverage,
       overview: overview ?? this.overview,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -400,6 +443,9 @@ class MoviesCompanion extends UpdateCompanion<Movy> {
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
     }
     if (posterPath.present) {
       map['poster_path'] = Variable<String>(posterPath.value);
@@ -419,6 +465,9 @@ class MoviesCompanion extends UpdateCompanion<Movy> {
     if (overview.present) {
       map['overview'] = Variable<String>(overview.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -427,12 +476,14 @@ class MoviesCompanion extends UpdateCompanion<Movy> {
     return (StringBuffer('MoviesCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
+          ..write('source: $source, ')
           ..write('posterPath: $posterPath, ')
           ..write('backdropPath: $backdropPath, ')
           ..write('originalTitle: $originalTitle, ')
           ..write('releaseDate: $releaseDate, ')
           ..write('voteAverage: $voteAverage, ')
-          ..write('overview: $overview')
+          ..write('overview: $overview, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -931,24 +982,28 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 }
 
 typedef $$MoviesTableCreateCompanionBuilder = MoviesCompanion Function({
-  Value<int> id,
+  required int id,
   required String title,
+  required String source,
   Value<String?> posterPath,
   Value<String?> backdropPath,
   required String originalTitle,
   Value<String?> releaseDate,
   required double voteAverage,
   Value<String?> overview,
+  Value<int> rowid,
 });
 typedef $$MoviesTableUpdateCompanionBuilder = MoviesCompanion Function({
   Value<int> id,
   Value<String> title,
+  Value<String> source,
   Value<String?> posterPath,
   Value<String?> backdropPath,
   Value<String> originalTitle,
   Value<String?> releaseDate,
   Value<double> voteAverage,
   Value<String?> overview,
+  Value<int> rowid,
 });
 
 class $$MoviesTableFilterComposer
@@ -965,6 +1020,9 @@ class $$MoviesTableFilterComposer
 
   ColumnFilters<String> get title => $composableBuilder(
       column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get source => $composableBuilder(
+      column: $table.source, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get posterPath => $composableBuilder(
       column: $table.posterPath, builder: (column) => ColumnFilters(column));
@@ -999,6 +1057,9 @@ class $$MoviesTableOrderingComposer
 
   ColumnOrderings<String> get title => $composableBuilder(
       column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get source => $composableBuilder(
+      column: $table.source, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get posterPath => $composableBuilder(
       column: $table.posterPath, builder: (column) => ColumnOrderings(column));
@@ -1035,6 +1096,9 @@ class $$MoviesTableAnnotationComposer
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 
   GeneratedColumn<String> get posterPath => $composableBuilder(
       column: $table.posterPath, builder: (column) => column);
@@ -1080,42 +1144,50 @@ class $$MoviesTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> title = const Value.absent(),
+            Value<String> source = const Value.absent(),
             Value<String?> posterPath = const Value.absent(),
             Value<String?> backdropPath = const Value.absent(),
             Value<String> originalTitle = const Value.absent(),
             Value<String?> releaseDate = const Value.absent(),
             Value<double> voteAverage = const Value.absent(),
             Value<String?> overview = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               MoviesCompanion(
             id: id,
             title: title,
+            source: source,
             posterPath: posterPath,
             backdropPath: backdropPath,
             originalTitle: originalTitle,
             releaseDate: releaseDate,
             voteAverage: voteAverage,
             overview: overview,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
+            required int id,
             required String title,
+            required String source,
             Value<String?> posterPath = const Value.absent(),
             Value<String?> backdropPath = const Value.absent(),
             required String originalTitle,
             Value<String?> releaseDate = const Value.absent(),
             required double voteAverage,
             Value<String?> overview = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               MoviesCompanion.insert(
             id: id,
             title: title,
+            source: source,
             posterPath: posterPath,
             backdropPath: backdropPath,
             originalTitle: originalTitle,
             releaseDate: releaseDate,
             voteAverage: voteAverage,
             overview: overview,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

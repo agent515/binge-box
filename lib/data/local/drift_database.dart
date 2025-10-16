@@ -10,6 +10,7 @@ part 'drift_database.g.dart';
 class Movies extends Table {
   IntColumn get id => integer()();
   TextColumn get title => text()();
+  TextColumn get source => text()();
   TextColumn get posterPath => text().nullable()();
   TextColumn get backdropPath => text().nullable()();
   TextColumn get originalTitle => text()();
@@ -20,7 +21,7 @@ class Movies extends Table {
   // require modifying remote DTOs. The movies table remains a cache of API
   // response fields.
   @override
-  Set<Column> get primaryKey => {id};
+  Set<Column> get primaryKey => {id, source};
 }
 
 class SyncQueue extends Table {
@@ -47,13 +48,16 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   // Movies DAO
-  Future<void> upsertMovies(List<MoviesCompanion> movies) async {
+  Future<void> upsertMovies(List<Insertable<Movy>> movies) async {
     await batch((batch) {
       batch.insertAllOnConflictUpdate(this.movies, movies);
     });
   }
 
   Future<List<Movy>> getAllMovies() => select(movies).get();
+
+  Future<List<Movy>> getMoviesBySource(String source) =>
+      (select(movies)..where((t) => t.source.equals(source))).get();
 
   // Bookmark helpers (local-only, no server sync)
   Future<void> addBookmark(int movieId) async {
