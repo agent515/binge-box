@@ -5,6 +5,8 @@ import 'package:binge_box/presentation/widgets/movie_grid.dart';
 import 'package:binge_box/utils/app_router.dart';
 import 'package:binge_box/utils/app_router.gr.dart';
 import 'package:flutter/material.dart';
+import 'package:binge_box/injectable/modules/connectivity_module.dart';
+import '../../widgets/offline_banner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePageReady extends StatelessWidget {
@@ -17,6 +19,9 @@ class HomePageReady extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use the connectivity stream provided by the DI-registered
+    // ConnectivityService so the same source is reused across the app.
+    final connectivityStream = getIt<ConnectivityService>().onStatusChange;
     return Scaffold(
       appBar: AppBar(
         title: Text('Binge Box'),
@@ -44,20 +49,29 @@ class HomePageReady extends StatelessWidget {
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          MovieGrid(
-            key: ValueKey('TrendingMoviesGrid'),
-            fetchMovies: context.read<HomeCubit>().fetchTrendingMoviesPage,
-            onMovieTap: (movie) =>
-                context.read<HomeCubit>().goToDetailsPage(movie),
-          ),
-          MovieGrid(
-            key: ValueKey('NowPlayingMoviesGrid'),
-            fetchMovies: context.read<HomeCubit>().fetchNowPlayingMoviesPage,
-            onMovieTap: (movie) =>
-                context.read<HomeCubit>().goToDetailsPage(movie),
+          OfflineBanner(isOnlineStream: connectivityStream),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                MovieGrid(
+                  key: ValueKey('TrendingMoviesGrid'),
+                  fetchMovies:
+                      context.read<HomeCubit>().fetchTrendingMoviesPage,
+                  onMovieTap: (movie) =>
+                      context.read<HomeCubit>().goToDetailsPage(movie),
+                ),
+                MovieGrid(
+                  key: ValueKey('NowPlayingMoviesGrid'),
+                  fetchMovies:
+                      context.read<HomeCubit>().fetchNowPlayingMoviesPage,
+                  onMovieTap: (movie) =>
+                      context.read<HomeCubit>().goToDetailsPage(movie),
+                ),
+              ],
+            ),
           ),
         ],
       ),
