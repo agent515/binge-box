@@ -44,6 +44,9 @@ Local Database (Offline support – Drift)
 
 Retrofit & Dio (Networking)
 
+### Demo
+<img src="assets/docs/demo.gif" alt="App Demo" width="250"/>
+
 
 ### 🛠️ Setup
 
