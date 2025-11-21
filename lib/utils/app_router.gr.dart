@@ -19,7 +19,7 @@ import 'package:flutter/material.dart' as _i4;
 /// [_i1.HomePage]
 class HomeRoute extends _i3.PageRouteInfo<void> {
   const HomeRoute({List<_i3.PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+      : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
@@ -39,10 +39,10 @@ class MovieDetailsRoute extends _i3.PageRouteInfo<MovieDetailsRouteArgs> {
     required _i5.Movie movie,
     List<_i3.PageRouteInfo>? children,
   }) : super(
-         MovieDetailsRoute.name,
-         args: MovieDetailsRouteArgs(key: key, movie: movie),
-         initialChildren: children,
-       );
+          MovieDetailsRoute.name,
+          args: MovieDetailsRouteArgs(key: key, movie: movie),
+          initialChildren: children,
+        );
 
   static const String name = 'MovieDetailsRoute';
 

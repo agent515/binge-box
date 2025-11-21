@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -34,6 +33,231 @@ mixin _$MovieDetailsState {
 class $MovieDetailsStateCopyWith<$Res> {
   $MovieDetailsStateCopyWith(
       MovieDetailsState _, $Res Function(MovieDetailsState) __);
+}
+
+/// Adds pattern-matching-related methods to [MovieDetailsState].
+extension MovieDetailsStatePatterns on MovieDetailsState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(MovieDetailsInitial value)? initial,
+    TResult Function(MovieDetailsLoading value)? loading,
+    TResult Function(MovieDetailsReady value)? ready,
+    TResult Function(MovieDetailsToggleBookmark value)? toggleBookmark,
+    TResult Function(MovieDetailsError value)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial() when initial != null:
+        return initial(_that);
+      case MovieDetailsLoading() when loading != null:
+        return loading(_that);
+      case MovieDetailsReady() when ready != null:
+        return ready(_that);
+      case MovieDetailsToggleBookmark() when toggleBookmark != null:
+        return toggleBookmark(_that);
+      case MovieDetailsError() when error != null:
+        return error(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(MovieDetailsInitial value) initial,
+    required TResult Function(MovieDetailsLoading value) loading,
+    required TResult Function(MovieDetailsReady value) ready,
+    required TResult Function(MovieDetailsToggleBookmark value) toggleBookmark,
+    required TResult Function(MovieDetailsError value) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial():
+        return initial(_that);
+      case MovieDetailsLoading():
+        return loading(_that);
+      case MovieDetailsReady():
+        return ready(_that);
+      case MovieDetailsToggleBookmark():
+        return toggleBookmark(_that);
+      case MovieDetailsError():
+        return error(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(MovieDetailsInitial value)? initial,
+    TResult? Function(MovieDetailsLoading value)? loading,
+    TResult? Function(MovieDetailsReady value)? ready,
+    TResult? Function(MovieDetailsToggleBookmark value)? toggleBookmark,
+    TResult? Function(MovieDetailsError value)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial() when initial != null:
+        return initial(_that);
+      case MovieDetailsLoading() when loading != null:
+        return loading(_that);
+      case MovieDetailsReady() when ready != null:
+        return ready(_that);
+      case MovieDetailsToggleBookmark() when toggleBookmark != null:
+        return toggleBookmark(_that);
+      case MovieDetailsError() when error != null:
+        return error(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(Movie movie, bool bookmarked)? ready,
+    TResult Function(bool value)? toggleBookmark,
+    TResult Function(AppError error)? error,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial() when initial != null:
+        return initial();
+      case MovieDetailsLoading() when loading != null:
+        return loading();
+      case MovieDetailsReady() when ready != null:
+        return ready(_that.movie, _that.bookmarked);
+      case MovieDetailsToggleBookmark() when toggleBookmark != null:
+        return toggleBookmark(_that.value);
+      case MovieDetailsError() when error != null:
+        return error(_that.error);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(Movie movie, bool bookmarked) ready,
+    required TResult Function(bool value) toggleBookmark,
+    required TResult Function(AppError error) error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial():
+        return initial();
+      case MovieDetailsLoading():
+        return loading();
+      case MovieDetailsReady():
+        return ready(_that.movie, _that.bookmarked);
+      case MovieDetailsToggleBookmark():
+        return toggleBookmark(_that.value);
+      case MovieDetailsError():
+        return error(_that.error);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(Movie movie, bool bookmarked)? ready,
+    TResult? Function(bool value)? toggleBookmark,
+    TResult? Function(AppError error)? error,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case MovieDetailsInitial() when initial != null:
+        return initial();
+      case MovieDetailsLoading() when loading != null:
+        return loading();
+      case MovieDetailsReady() when ready != null:
+        return ready(_that.movie, _that.bookmarked);
+      case MovieDetailsToggleBookmark() when toggleBookmark != null:
+        return toggleBookmark(_that.value);
+      case MovieDetailsError() when error != null:
+        return error(_that.error);
+      case _:
+        return null;
+    }
+  }
 }
 
 /// @nodoc

@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -84,14 +84,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i3.CheckBookmarkUseCase(gh<_i687.BookmarkRepo>()));
     gh.factory<_i860.ToggleBookmarkUseCase>(
         () => _i860.ToggleBookmarkUseCase(gh<_i687.BookmarkRepo>()));
-    gh.factory<_i717.SearchMoviesUseCase>(
-        () => _i717.SearchMoviesUseCase(gh<_i600.MovieRepo>()));
+    gh.factory<_i370.GetBookmarkedMoviesUseCase>(
+        () => _i370.GetBookmarkedMoviesUseCase(gh<_i600.MovieRepo>()));
     gh.factory<_i845.GetNowPlayingMoviesUseCase>(
         () => _i845.GetNowPlayingMoviesUseCase(gh<_i600.MovieRepo>()));
     gh.factory<_i255.GetTrendingMoviesUseCase>(
         () => _i255.GetTrendingMoviesUseCase(gh<_i600.MovieRepo>()));
-    gh.factory<_i370.GetBookmarkedMoviesUseCase>(
-        () => _i370.GetBookmarkedMoviesUseCase(gh<_i600.MovieRepo>()));
+    gh.factory<_i717.SearchMoviesUseCase>(
+        () => _i717.SearchMoviesUseCase(gh<_i600.MovieRepo>()));
     gh.factoryParam<_i523.MovieDetailsCubit, _i406.Movie, dynamic>((
       movie,
       _,
